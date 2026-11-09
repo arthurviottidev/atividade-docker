@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    container_name: hello-container
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+    command: npm run dev
