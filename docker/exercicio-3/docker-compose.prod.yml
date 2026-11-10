@@ -1,13 +1,14 @@
+name: exercicio3-prod
+
 services:
   api:
     build:
       context: .
       target: prod
     image: exercicio3-api:prod
-    container_name: exercicio3-api-prod
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       DB_HOST: db
       DB_USER: ${POSTGRES_USER}
@@ -17,29 +18,28 @@ services:
       db:
         condition: service_healthy
     networks:
-      - exercicio3-network
+      - app-network
 
   db:
     image: postgres:17-alpine
-    container_name: exercicio3-db-prod
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - pgdata-prod:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - exercicio3-network
+      - app-network
 
 volumes:
-  pgdata-prod:
+  pgdata:
 
 networks:
-  exercicio3-network:
+  app-network:
     driver: bridge

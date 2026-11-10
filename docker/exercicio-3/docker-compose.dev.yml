@@ -1,10 +1,11 @@
+name: exercicio3-dev
+
 services:
   api:
     build:
       context: .
       target: dev
     image: exercicio3-api:dev
-    container_name: exercicio3-api-dev
     ports:
       - "3000:3000"
     volumes:
@@ -18,28 +19,27 @@ services:
       db:
         condition: service_healthy
     networks:
-      - exercicio3-network
+      - app-network
 
   db:
     image: postgres:17-alpine
-    container_name: exercicio3-db-dev
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - pgdata-dev:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - exercicio3-network
+      - app-network
 
 volumes:
-  pgdata-dev:
+  pgdata:
 
 networks:
-  exercicio3-network:
+  app-network:
     driver: bridge
